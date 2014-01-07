@@ -110,14 +110,8 @@ void LipmVarHeightPlanner::setZMPTraj(const Traj<3,3> &traj, const std::vector <
     }
   }
   else {
-    _du.clear();
-    _K.clear();
-
-    // allocate K and du 
-    for (size_t i = 0; i < traj.size(); i++) {
-      _du.push_back(Eigen::Matrix<double,3,1>::Zero());
-      _K.push_back(_lqr.getK());
-    }
+    _du.resize(traj.size(), Eigen::Matrix<double,3,1>::Zero());
+    _K.resize(traj.size(), _lqr.getK());
   }
 
   // initial trajectory
@@ -175,9 +169,10 @@ double LipmVarHeightPlanner::forwardPass(const double *x0, Traj<3,3> &traj1) con
   Eigen::Matrix<double,6,1> z1;
   Eigen::Matrix<double,3,1> u;
 
-  traj1 = Traj<3,3>();
-  for (size_t i = 0; i < _zmp_d.size(); i++)
-    traj1.append(_zmp_d[i].time, _zmp_d[i].type, NULL, NULL, NULL, NULL);
+  traj1 = _zmp_d;
+  //traj1 = Traj<3,3>();
+  //for (size_t i = 0; i < _zmp_d.size(); i++)
+  //  traj1.append(_zmp_d[i].time, _zmp_d[i].type, NULL, NULL, NULL, NULL);
   
   dvec_copy(traj1[0].x, x0, 6);
   
@@ -332,7 +327,7 @@ bool LipmVarHeightPlanner::getCOMTraj(const Traj<3,3> &zmp, const double *state,
   //sprintf(buf, "/home/sfeng/papers/humanoids13/data/lipm_it0");
   //_traj0.toFile(buf, true, true);
 
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 20; i++) {
     //printf("it %d\n", i);
     backwardPass(_traj0);
     cost = forwardPass(state, com);

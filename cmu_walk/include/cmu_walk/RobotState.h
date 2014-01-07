@@ -47,7 +47,7 @@ class RobotState {
     double rootdd[6]; 
     double root_b_w[3];    // body angular velocity
     double root_b_wd[3];   // body angular acceleration
-    
+
     double tfRoot[3];   // for all the ros people
 
     double joints[N_JOINTS];
@@ -119,7 +119,7 @@ class RobotState {
 
     //extra state variables
     int contactState;
-    
+
 
 
 
@@ -140,17 +140,17 @@ class RobotState {
     ModelType getType() const { return _type; }
 
     void checkContact();
-    
+
     static double hipZlim(double hipY) {
-    	if(hipY > -1.4)	return -0.17;
-    	else if(hipY < -1.5)	return 0.1;
-    	else return (-hipY-1.4)*.27/0.1-0.17;
+      if(hipY > -1.4)	return -0.17;
+      else if(hipY < -1.5)	return 0.1;
+      else return (-hipY-1.4)*.27/0.1-0.17;
     }
 
     void computeSDFvars(const double pos[3], const Eigen::Quaterniond q,
         const double vel[3], const double w[3],     
         const double j[N_JOINTS], const double jd[N_JOINTS]) { computeSDFvars(pos, q.coeffs().data(), vel, w, j, jd); }
-    
+
     void computeSDFvars(const double pos[3], const double q[4],   
         const double vel[3], const double w[3],     
         const double j[N_JOINTS], const double jd[N_JOINTS]);

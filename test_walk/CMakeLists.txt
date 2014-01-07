@@ -30,5 +30,6 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(example ${PROJECT_NAME})
 
 rosbuild_add_executable(test_walk src/test_walk.cpp src/cmu_ctrl_utils.cpp)
+  set_target_properties(test_walk PROPERTIES COMPILE_FLAGS "-O4")
   target_link_libraries(test_walk CMUWalkSim)
 

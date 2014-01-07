@@ -23,7 +23,7 @@
 #include "Eigen_utils.hpp"
 #include <map>
 
-#define __WALKCON_LIPM_TIME_STEP      0.001
+#define __WALKCON_LIPM_TIME_STEP      0.003
 
 LipmWalkingCon::LipmWalkingCon()
 {
@@ -907,7 +907,7 @@ int LipmWalkingCon::control(RobotState &rs, Command &cmd)
 
   //if (!ikCon->IK(ikcmd, cmd))
   //  return -1;
-  
+ 
   return 0;
 }
 

@@ -1,0 +1,104 @@
+SD/FAST Information File: drc_pelvis.sd
+Generated 01-Apr-2009 04:20:00 by SD/FAST, Kane's formulation
+(sdfast B.2.8 #30123) on machine ID unknown
+
+ROADMAP (drc_pelvis.sd)
+
+Bodies        Inb
+No  Name      body Joint type  Coords q         Multipliers
+--- --------- ---- ----------- ---------------- -----------------------
+ -1 $ground                                    |
+  0 pelvis     -1  Sixdof        0?  1?  2?    |
+                   ...           3?  4?  5? 34 |  0p  1p  2p  3p  4p  5p
+  1 ltorso      0  Pin           6?            |  6p
+  2 mtorso      1  Pin           7?            |  7p
+  3 utorso      2  Pin           8?            |  8p
+  4 head        3  Pin           9?            |  9p
+  5 l_uglut     0  Pin          10?            | 10p
+  6 l_lglut     5  Pin          11?            | 11p
+  7 l_uleg      6  Pin          12?            | 12p
+  8 l_lleg      7  Pin          13?            | 13p
+  9 l_talus     8  Pin          14?            | 14p
+ 10 l_foot      9  Pin          15?            | 15p
+ 11 r_uglut     0  Pin          16?            | 16p
+ 12 r_lglut    11  Pin          17?            | 17p
+ 13 r_uleg     12  Pin          18?            | 18p
+ 14 r_lleg     13  Pin          19?            | 19p
+ 15 r_talus    14  Pin          20?            | 20p
+ 16 r_foot     15  Pin          21?            | 21p
+ 17 l_clav      3  Pin          22?            | 22p
+ 18 l_scap     17  Pin          23?            | 23p
+ 19 l_uarm     18  Pin          24?            | 24p
+ 20 l_larm     19  Pin          25?            | 25p
+ 21 l_farm     20  Pin          26?            | 26p
+ 22 l_hand     21  Pin          27?            | 27p
+ 23 r_clav      3  Pin          28?            | 28p
+ 24 r_scap     23  Pin          29?            | 29p
+ 25 r_uarm     24  Pin          30?            | 30p
+ 26 r_larm     25  Pin          31?            | 31p
+ 27 r_farm     26  Pin          32?            | 32p
+ 28 r_hand     27  Pin          33?            | 33p
+
+
+STATE INDEX TO JOINT/AXIS MAP (drc_pelvis.sd)
+
+ Index
+  q|u   Joint  Axis   Joint type    Axis type    Joint Name
+ -----  -----  ----   -----------   ----------   ----------
+  0|35      0     0?  Sixdof        translate    
+  1|36      .     1?  .             translate 
+  2|37      .     2?  .             translate 
+  3|38      .     3?  .             quaternion
+  4|39      .     4?  .             quaternion
+  5|40      .     5?  .             quaternion
+  6|41      1     0?  Pin           rotate       
+  7|42      2     0?  Pin           rotate       
+  8|43      3     0?  Pin           rotate       
+  9|44      4     0?  Pin           rotate       
+ 10|45      5     0?  Pin           rotate       
+ 11|46      6     0?  Pin           rotate       
+ 12|47      7     0?  Pin           rotate       
+ 13|48      8     0?  Pin           rotate       
+ 14|49      9     0?  Pin           rotate       
+ 15|50     10     0?  Pin           rotate       
+ 16|51     11     0?  Pin           rotate       
+ 17|52     12     0?  Pin           rotate       
+ 18|53     13     0?  Pin           rotate       
+ 19|54     14     0?  Pin           rotate       
+ 20|55     15     0?  Pin           rotate       
+ 21|56     16     0?  Pin           rotate       
+ 22|57     17     0?  Pin           rotate       
+ 23|58     18     0?  Pin           rotate       
+ 24|59     19     0?  Pin           rotate       
+ 25|60     20     0?  Pin           rotate       
+ 26|61     21     0?  Pin           rotate       
+ 27|62     22     0?  Pin           rotate       
+ 28|63     23     0?  Pin           rotate       
+ 29|64     24     0?  Pin           rotate       
+ 30|65     25     0?  Pin           rotate       
+ 31|66     26     0?  Pin           rotate       
+ 32|67     27     0?  Pin           rotate       
+ 33|68     28     0?  Pin           rotate       
+ 34|        0     6   Sixdof        4th quat  
+   
+
+SYSTEM PARAMETERS (drc_pelvis.sd)
+
+Parameter  Value  Description
+
+nbod          29  no. bodies (also, no. of tree joints)
+njnt          29  total number of joints (tree+loop)
+ndof          34  no. degrees of freedom allowed by tree joints
+nloop          0  no. loop joints
+nldof          0  no. degrees of freedom allowed by loop joints
+
+nq            35  no. position coordinates in state (tree joints)
+nu            34  no. rate coordinates in state (tree joints)
+nlq            0  no. position coordinates describing loop joints
+nlu            0  no. rate coordinates describing loop joints
+
+nc            34  total no. constraints defined
+nlc            0  no. loop joint constraints
+npresc        34  no. prescribed motion constraints
+nuserc         0  no. user constraints
+

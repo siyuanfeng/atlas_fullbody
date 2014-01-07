@@ -1,0 +1,78 @@
+SD/FAST Information File: drc_hat.sd
+Generated 01-Apr-2003 04:20:00 by SD/FAST, Kane's formulation
+(sdfast B.2.8 #30123) on machine ID unknown
+
+ROADMAP (drc_hat.sd)
+
+Bodies        Inb
+No  Name      body Joint type  Coords q         Multipliers
+--- --------- ---- ----------- ---------------- -----------------------
+ -1 $ground                                    |
+  0 pelvis     -1  Sixdof        0?  1?  2?    |
+                   ...           3?  4?  5? 21 |  0p  1p  2p  3p  4p  5p
+  1 ltorso      0  Pin           6?            |  6p
+  2 mtorso      1  Pin           7?            |  7p
+  3 hat         2  Pin           8?            |  8p
+  4 l_uglut     0  Pin           9?            |  9p
+  5 l_lglut     4  Pin          10?            | 10p
+  6 l_uleg      5  Pin          11?            | 11p
+  7 l_lleg      6  Pin          12?            | 12p
+  8 l_talus     7  Pin          13?            | 13p
+  9 l_foot      8  Pin          14?            | 14p
+ 10 r_uglut     0  Pin          15?            | 15p
+ 11 r_lglut    10  Pin          16?            | 16p
+ 12 r_uleg     11  Pin          17?            | 17p
+ 13 r_lleg     12  Pin          18?            | 18p
+ 14 r_talus    13  Pin          19?            | 19p
+ 15 r_foot     14  Pin          20?            | 20p
+
+
+STATE INDEX TO JOINT/AXIS MAP (drc_hat.sd)
+
+ Index
+  q|u   Joint  Axis   Joint type    Axis type    Joint Name
+ -----  -----  ----   -----------   ----------   ----------
+  0|22      0     0?  Sixdof        translate    
+  1|23      .     1?  .             translate 
+  2|24      .     2?  .             translate 
+  3|25      .     3?  .             quaternion
+  4|26      .     4?  .             quaternion
+  5|27      .     5?  .             quaternion
+  6|28      1     0?  Pin           rotate       
+  7|29      2     0?  Pin           rotate       
+  8|30      3     0?  Pin           rotate       
+  9|31      4     0?  Pin           rotate       
+ 10|32      5     0?  Pin           rotate       
+ 11|33      6     0?  Pin           rotate       
+ 12|34      7     0?  Pin           rotate       
+ 13|35      8     0?  Pin           rotate       
+ 14|36      9     0?  Pin           rotate       
+ 15|37     10     0?  Pin           rotate       
+ 16|38     11     0?  Pin           rotate       
+ 17|39     12     0?  Pin           rotate       
+ 18|40     13     0?  Pin           rotate       
+ 19|41     14     0?  Pin           rotate       
+ 20|42     15     0?  Pin           rotate       
+ 21|        0     6   Sixdof        4th quat  
+   
+
+SYSTEM PARAMETERS (drc_hat.sd)
+
+Parameter  Value  Description
+
+nbod          16  no. bodies (also, no. of tree joints)
+njnt          16  total number of joints (tree+loop)
+ndof          21  no. degrees of freedom allowed by tree joints
+nloop          0  no. loop joints
+nldof          0  no. degrees of freedom allowed by loop joints
+
+nq            22  no. position coordinates in state (tree joints)
+nu            21  no. rate coordinates in state (tree joints)
+nlq            0  no. position coordinates describing loop joints
+nlu            0  no. rate coordinates describing loop joints
+
+nc            21  total no. constraints defined
+nlc            0  no. loop joint constraints
+npresc        21  no. prescribed motion constraints
+nuserc         0  no. user constraints
+

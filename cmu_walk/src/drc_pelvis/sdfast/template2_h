@@ -1,0 +1,74 @@
+#ifndef _NAME_H
+#define _NAME_H
+
+#include "SDModel.h"
+
+STRUCTS
+
+#ifdef __cplusplus
+class NAME: public SDModel{
+     protected:
+        sdgtopo_t sdgtopo;
+        sdginput_t sdginput;
+        sdgstate_t sdgstate;
+        sdglhs_t sdglhs;
+        sdgrhs_t sdgrhs;
+        sdgtemp_t sdgtemp;
+        sdgerror_t sdgerror;
+        int *idx_2_joint;
+        int *idx_2_axis;
+        int *idx_2_aux;
+        int *idx_2_motor;
+        int num_controls;
+                        
+     public:
+        NAME();
+        ~NAME();
+        
+        DECLARES	
+
+        // user-defined functions
+	  //        void sduforce(double t, double *q, double *u);
+	  //        void sdumotion(double t, double *q, double *u);
+        
+
+
+        void sduderiv(double t, double *y, double *dy, double *params, int *status);
+        void sdueval(double *vars, double *params, double *redid);
+        
+        void set_aux(int *map); // pass in an array of aux numbers
+        
+  //      NAME operator= (NAME);
+        
+        int NQ(void);   // get number of q coordinates
+        int NU(void);   // get number of u coordinates
+		int BQ(void);	// number of base coordinates (6 if floating, 0 otherwise)
+        int NM(void);   // number of control joints ("motors")
+        int NBOD(void);   // number of bodies
+        int NJNT(void);     // number of joints
+        
+        int joint(int idx); // get joint number of coordinate
+        int axis(int idx);  // get axis of coordinate
+        int aux(int idx); // get aux number of coordinate
+        int motor(int idx); // get the coordinate of motor
+
+	//void massmat( double *mat );
+
+	
+	//#include "NAME_ext.h"
+
+		//double **M;
+        
+//         double * get_q(int i);
+//         double * get_u(int i);
+//         double * get_qdot(int i);
+//         double * get_udot(int i);
+//         double *q_local, *u_local, *qdot_local, *udot_local, *u_zero;
+};
+#else
+typedef struct NAME NAME;
+#endif
+
+
+
+#endif

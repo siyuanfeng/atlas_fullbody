@@ -1,0 +1,16 @@
+<package>
+  <description brief="test_walk">
+
+     test_walk
+
+  </description>
+  <author>sfeng</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/test_walk</url>
+  <depend package="roscpp"/>
+  <depend package="cmu_walk"/>
+  <depend package="roslib"/>
+</package>
+
+

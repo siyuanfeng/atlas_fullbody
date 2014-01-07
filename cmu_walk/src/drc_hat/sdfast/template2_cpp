@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include "sdlib.h"
+#include "NAME.h"
+
+PREDEFS
+
+#define lasterr (sdgerror.lasterr_)
+#define lastrou (sdgerror.lastrou_)
+
+NAME::NAME(){    
+    int dof_num=0;
+    CONSTRUCTOR   
+    
+    idx_2_joint = (int *)malloc((ndof)*sizeof(int));
+    idx_2_axis = (int *)malloc((ndof)*sizeof(int));
+    idx_2_aux = (int *)malloc((ndof)*sizeof(int));
+    idx_2_motor = (int *)malloc((ndof)*sizeof(int));
+    num_controls=0;    
+    for(int i=0;i<nbod;i++){
+        if (njntdof[i]==1){
+            idx_2_joint[num_controls] = i;
+            idx_2_axis[num_controls] = 0;
+            idx_2_motor[num_controls] = dof_num;
+            num_controls++;
+        }
+        dof_num+=njntdof[i];
+    }
+    q_local = (double *)malloc((ndof+nball)*sizeof(double));
+    u_local = (double *)malloc((ndof)*sizeof(double));
+    qdot_local = (double *)malloc((ndof+nball)*sizeof(double));    
+    udot_local = (double *)malloc((ndof)*sizeof(double));  
+    u_zero = (double *)malloc((ndof)*sizeof(double));
+    for(int i=0;i<ndof;i++){
+        q_local[i] = 0.0;
+        qdot_local[i] = 0.0;
+        u_local[i] = 0.0;
+        udot_local[i] = 0.0;
+        u_zero[i] = 0.0;
+    }
+    q_local[ndof+nball-1]=1.0;
+    qdot_local[ndof+nball-1]=0.0;
+}
+
+NAME::~NAME(void){
+	free(idx_2_joint);
+    free(idx_2_axis);
+    free(idx_2_aux);
+    free(idx_2_motor);
+    free(q_local);
+    free(u_local);
+    free(qdot_local);
+    free(udot_local);
+    free(u_zero);
+}
+
+FUNCTIONS
+
+int NAME::NQ(void){
+    return ndof + nball;
+}
+
+int NAME::NU(void){
+    return ndof;
+}
+
+int NAME::BQ(void){
+	if (jtype[0]==6)	return 6;
+	else				return 0;
+}
+
+int NAME::NBOD(void){
+    return nbod;
+}
+
+int NAME::NM(void){
+    return num_controls;
+}
+
+int NAME::NJNT(void){
+    return nbod+nloop;
+}
+
+int NAME::joint(int idx){
+    return idx_2_joint[idx];
+}
+
+int NAME::axis(int idx){
+    return idx_2_axis[idx];
+}
+
+int NAME::aux(int idx){
+    return idx_2_aux[idx];
+}
+
+int NAME::motor(int idx){
+    return idx_2_motor[idx];
+}
+
+void NAME::set_aux(int *map){
+    for(int i=0;i<num_controls;i++){
+        idx_2_aux[i] = map[i];
+    }
+}
+
+// double * NAME::get_q(int i){
+//     return &q_local[i];
+// }
+// double * NAME::get_u(int i){
+//     return &u_local[i];
+// }
+// double * NAME::get_qdot(int i){
+//     return &qdot_local[i];
+// }
+// double * NAME::get_udot(int i){
+//     return &udot_local[i];
+// }
+
+//NAME NAME::operator= (NAME x){
+//    NAME y;
+//    y.sdgtopo=x.sdgtopo;
+//    y.sdginput=x.sdginput;
+//    y.sdgstate=x.sdgstate;
+//    y.sdglhs=x.sdglhs;
+//    y.sdgrhs=x.sdgrhs;
+//    y.sdgtemp=x.sdgtemp;
+//    return y;
+//}

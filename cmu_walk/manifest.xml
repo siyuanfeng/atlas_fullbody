@@ -1,0 +1,18 @@
+<package>
+  <description brief="cmu_walk">
+
+     cmu_walk
+
+  </description>
+  <author>sfeng</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/cmu_walk</url>
+ 
+  <export>
+  	<cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib"/>
+  	<!-- <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib -Wl,-rpath,${prefix}/lib -lCMUWalkAtlas"/> -->
+  </export>
+</package>
+
+

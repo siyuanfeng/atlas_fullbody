@@ -1,0 +1,314 @@
+#sdfast -lc -ge xxx.sd
+#              z|                 
+#               |                 
+#               |_____ y          
+#              /                  
+#            x/                   
+
+#              z|                 
+#               O                 
+#             --+--           
+#               |_____ y          
+#              /|\                  
+#             /_| |_                  
+#           x/                      
+#y points to humanoid's left        
+#z points up                      
+#x points forward                  
+
+prefix = full_air_
+
+gravity = 0? 0? -9.81?
+
+body = pelvis inb = $ground joint = free
+mass = 17.982?
+inertia = 0.125569? 0.0008? -0.000499757?
+0.0008? 0.0972062? -0.0005?
+-0.000499757? -0.0005? 0.117937?
+bodytojoint = -0.0113715? 0? -0.0268706?
+inbtojoint = 0? 0? 0.92712?
+pin = 1? 0? 0?
+pin = 0? 1? 0?
+pin = 0? 0? 1?
+prescribed = 0? 0? 0? 0? 0? 0?
+
+body = ltorso inb = pelvis joint = pin
+mass = 2.409?
+inertia = 0.0039092? -5.04491e-08? -0.000342157?
+-5.04491e-08? 0.00341694? 4.87119e-07?
+-0.000342157? 4.87119e-07? 0.00174492?
+bodytojoint = 0.0112984? 3.15366e-06? -0.0746835?
+inbtojoint = -0.0238715? 0? -0.0268706?
+pin =  0? 0? 1?
+prescribed = 0?
+
+body = mtorso inb = ltorso joint = pin
+mass = 0.69?
+inertia = 0.000454181? -6.10764e-05? 3.94009e-05?
+-6.10764e-05? 0.000483282? 5.27463e-05?
+3.94009e-05? 5.27463e-05? 0.000444215?
+bodytojoint = 0.00816266? 0.0131245? -0.0305974?
+inbtojoint = 0.0112984? 3.15366e-06? 0.0872865?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = utorso inb = mtorso joint = pin
+mass = 52.207?
+inertia = 1.47126? 0.00362? 0.329434?
+0.00362? 1.53128? 0.001?
+0.329434? 0.001? 1.32197?
+bodytojoint = 0.0911174? 0? -0.300409?
+inbtojoint = 0.00816266? 0.0131245? 0.0194026?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = head inb = utorso joint = pin
+mass = 1.41991?
+inertia = 0.00361284? -1.51324e-06? -0.000892818?
+-1.51324e-06? 0.00208745? -6.83342e-07?
+-0.000892818? -6.83342e-07? 0.00179047?
+bodytojoint = 0.0754942? -3.38765e-05? -0.0277411?
+inbtojoint = 0.3078374? 0? 0.237551?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = l_uglut inb = pelvis joint = pin
+mass = 0.648?
+inertia = 0.00074276? -3.79607e-08? -2.79549e-05?
+-3.79607e-08? 0.000688179? -3.2735e-08?
+-2.79549e-05? -3.2735e-08? 0.00041242?
+bodytojoint = -0.00529262? 0.00344732? -0.00313046?
+inbtojoint = -0.0113715? 0.089? -0.0268706?
+pin =  0? 0? 1?
+prescribed = 0?
+
+body = l_lglut inb = l_uglut joint = pin
+mass = 0.866?
+inertia = 0.000691326? -2.24344e-05? 2.50508e-06?
+-2.24344e-05? 0.00126856? 0.000137862?
+2.50508e-06? 0.000137862? 0.00106487?
+bodytojoint = -0.0133341? -0.0170484? 0.0312052?
+inbtojoint = -0.00529262? 0.00344732? -0.00313046?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = l_uleg inb = l_lglut joint = pin
+mass = 9.209?
+inertia = 0.09? 0? 0?
+0? 0.09? 0?
+0? 0? 0.02?
+bodytojoint = 0? 0? 0.21?
+inbtojoint = 0.0366659? -0.0170484? -0.0187948?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = l_lleg inb = l_uleg joint = pin
+mass = 5.479?
+inertia = 0.077? 0? -0.003?
+0? 0.076? 0?
+-0.003? 0? 0.01?
+bodytojoint = -0.001? 0? 0.187?
+inbtojoint = -0.05? 0? -0.164?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = l_talus inb = l_lleg joint = pin
+mass = 0.125?
+inertia = 1.01674e-05? 0? 0?
+0? 8.42775e-06? 0?
+0? 0? 1.30101e-05?
+bodytojoint = 0? 0? 0?
+inbtojoint = -0.001? 0? -0.235?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = l_foot inb = l_talus joint = pin
+mass = 2.05?
+inertia = 0.002? 0? 0?
+0? 0.007? 0?
+0? 0? 0.008?
+bodytojoint = -0.027? 0? 0.067?
+inbtojoint = 0? 0? 0?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = r_uglut inb = pelvis joint = pin
+mass = 0.648?
+inertia = 0.00074276? 3.79607e-08? -2.79549e-05?
+3.79607e-08? 0.000688179? 3.2735e-08?
+-2.79549e-05? 3.2735e-08? 0.00041242?
+bodytojoint = -0.00529262? -0.00344732? -0.00313046?
+inbtojoint = -0.0113715? -0.089? -0.0268706?
+pin =  0? 0? 1?
+prescribed = 0?
+
+body = r_lglut inb = r_uglut joint = pin
+mass = 0.866?
+inertia = 0.000691326? 2.24344e-05? 2.50508e-06?
+2.24344e-05? 0.00126856? -0.000137862?
+2.50508e-06? -0.000137862? 0.00106487?
+bodytojoint = -0.0133341? 0.0170484? 0.0312052?
+inbtojoint = -0.00529262? -0.00344732? -0.00313046?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = r_uleg inb = r_lglut joint = pin
+mass = 9.209?
+inertia = 0.09? 0? 0?
+0? 0.09? 0?
+0? 0? 0.02?
+bodytojoint = 0? 0? 0.21?
+inbtojoint = 0.0366659? 0.0170484? -0.0187948?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = r_lleg inb = r_uleg joint = pin
+mass = 5.479?
+inertia = 0.077? -0? -0.003?
+-0? 0.076? -0?
+-0.003? -0? 0.01?
+bodytojoint = -0.001? 0? 0.187?
+inbtojoint = -0.05? 0? -0.164?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = r_talus inb = r_lleg joint = pin
+mass = 0.125?
+inertia = 1.01674e-05? 0? 0?
+0? 8.42775e-06? 0?
+0? 0? 1.30101e-05?
+bodytojoint = 0? 0? 0?
+inbtojoint = -0.001? 0? -0.235?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = r_foot inb = r_talus joint = pin
+mass = 2.05?
+inertia = 0.002? 0? 0?
+0? 0.007? 0?
+0? 0? 0.008?
+bodytojoint = -0.027? 0? 0.067?
+inbtojoint = 0? 0? 0?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = l_clav inb = utorso joint = pin
+mass = 3.45?
+inertia = 0.011? 0? 0?
+0? 0.009? -0.004?
+0? -0.004? 0.004?
+bodytojoint = 0? -0.048? -0.084?
+inbtojoint = 0.1555274? 0.13866? -0.193229?
+pin =  0? 0.5? 0.86602530283827605651?
+prescribed = 0?
+
+body = l_scap inb = l_clav joint = pin
+mass = 3.012?
+inertia = 0.00319? 0? 0?
+0? 0.00583? 0?
+0? 0? 0.00583?
+bodytojoint = 0? 0? 0?
+inbtojoint = 0? 0.09235? 0.11209?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = l_uarm inb = l_scap joint = pin
+mass = 3.388?
+inertia = 0.00656? 0? 0?
+0? 0.00358? 0?
+0? 0? 0.00656?
+bodytojoint = 0? 0.065? 0?
+inbtojoint = 0? 0.187? 0.016?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = l_larm inb = l_uarm joint = pin
+mass = 2.509?
+inertia = 0.00265? 0? 0?
+0? 0.00446? 0?
+0? 0? 0.00446?
+bodytojoint = 0? 0? 0?
+inbtojoint = 0? 0.184? 0.00921?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = l_farm inb = l_larm joint = pin
+mass = 3.388?
+inertia = 0.00656? 0? 0?
+0? 0.00358? 0?
+0? 0? 0.00656?
+bodytojoint = 0? 0.065? 0?
+inbtojoint = 0? 0.187? -0.00921?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = l_hand inb = l_farm joint = pin
+mass = 2.509?
+inertia = 0.00265? 0? 0?
+0? 0.00446? 0?
+0? 0? 0.00446?
+bodytojoint = 0? 0? 0?
+inbtojoint = 0? 0.184? 0.00921?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = r_clav inb = utorso joint = pin
+mass = 3.45?
+inertia = 0.011? 0? 0?
+0? 0.009? 0.004?
+0? 0.004? 0.004?
+bodytojoint = 0? 0.048? -0.084?
+inbtojoint = 0.1555274? -0.13866? -0.193229?
+pin =  0? 0.5? -0.86602530283827605651?
+prescribed = 0?
+
+body = r_scap inb = r_clav joint = pin
+mass = 3.012?
+inertia = 0.00319? 0? 0?
+0? 0.00583? 0?
+0? 0? 0.00583?
+bodytojoint = 0? 0? 0?
+inbtojoint = 0? -0.09235? 0.11209?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = r_uarm inb = r_scap joint = pin
+mass = 3.388?
+inertia = 0.00656? 0? 0?
+0? 0.00358? 0?
+0? 0? 0.00656?
+bodytojoint = 0? -0.065? 0?
+inbtojoint = 0? -0.187? 0.016?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = r_larm inb = r_uarm joint = pin
+mass = 2.509?
+inertia = 0.00265? 0? 0?
+0? 0.00446? 0?
+0? 0? 0.00446?
+bodytojoint = 0? 0? 0?
+inbtojoint = 0? -0.184? 0.00921?
+pin =  1? 0? 0?
+prescribed = 0?
+
+body = r_farm inb = r_larm joint = pin
+mass = 3.388?
+inertia = 0.00656? 0? 0?
+0? 0.00358? 0?
+0? 0? 0.00656?
+bodytojoint = 0? -0.065? 0?
+inbtojoint = 0? -0.187? -0.00921?
+pin =  0? 1? 0?
+prescribed = 0?
+
+body = r_hand inb = r_farm joint = pin
+mass = 2.509?
+inertia = 0.00265? 0? 0?
+0? 0.00446? 0?
+0? 0? 0.00446?
+bodytojoint = 0? 0? 0?
+inbtojoint = 0? -0.184? 0.00921?
+pin =  1? 0? 0?
+prescribed = 0?
+

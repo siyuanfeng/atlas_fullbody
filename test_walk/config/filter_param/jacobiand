@@ -1,0 +1,41 @@
+// Alternative way of computing Jd
+#ifdef JD_BENX
+  double Jplus[LR][PELV_N_SDFAST_U][6];    // J in next time step
+
+  // Integrate one time step to compute next J
+  double qdot[PELV_N_SDFAST_Q];
+  PelMod.sdu2qdot(&sdFastState[PELV_N_SDFAST_Q],qdot);
+  for (int i=0; i < PELV_N_SDFAST_Q; i++){
+    sdFastState[i]+=qdot[i]*timeStep; 
+  }
+  set_state(&PelMod, sdFastState);
+  for (int side = 0; side < 2; side++) {
+    //foot positions and jacobians
+    body_position(&PelMod, NULL, body[side], feet[side].com_to_weld_offset, feet[side].w_pos, &(Jplus[side][0][0]));
+    for (int j = 0; j < PELV_N_SDFAST_U; j++) {
+      for (int k = 0; k < 6; k++) {
+        Jd[side][j][k] = (Jplus[side][j][k] - J[side][j][k]) / timeStep;
+      }
+    }   
+  }
+  for (int i=0; i < PELV_N_SDFAST_Q; i++){
+    sdFastState[i]-=qdot[i]*timeStep; 
+  }                          
+  set_state(&PelMod, sdFastState);
+  //double diffmax = 0.0, tmp;
+  //for(int side = 0; side < LR; side++) {		
+    //for(int i = 0; i < PELV_N_SDFAST_U; i++) {
+      //for(int j = 0; j < 6; j++) {
+        //// Jd[side][i][j] = 0.0;
+        //// tmp = fabs(Jd[side][i][j]-dJdq_times_qot[side][i][j]); 
+        ////tmp = fabs(Jplus[side][i][j] - J[side][i][j]) ;
+        ////tmp = fabs(Jd[side][i][j]-Jd_current[side][i][j]) ;
+        //// tmp = fabs(dJdq_times_qot[side][i][j]) ; 
+        //tmp = fabs(Jd_current[side][i][j]) ; 
+        //diffmax = (diffmax > tmp ? diffmax : tmp); 
+      //}
+    //}
+  //} 
+  //printf ("Jd Check Max: %g\n", diffmax);    
+
+#endif // JD_BENX

@@ -905,8 +905,8 @@ int LipmWalkingCon::control(RobotState &rs, Command &cmd)
   if (!idCon->ID(rs, idcmd, cmd))
     return -1;
 
-  if (!ikCon->IK(ikcmd, cmd))
-    return -1;
+  //if (!ikCon->IK(ikcmd, cmd))
+  //  return -1;
   
   return 0;
 }

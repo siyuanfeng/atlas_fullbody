@@ -476,37 +476,29 @@ bool CMUCtrlUtils::updateRobotState(int contactState, RobotState &rs)
   return true; 
 }
 
-void load_KFParams(KinematicFilter3 &kcekf)
+void load_KFParams(const std::string &pkg_name, KinematicFilter3 &kcekf)
 {
   std::string nameQ;
   std::string nameR;
   // Q
-#ifdef ATLAS_ONLINE
-  nameQ = ros::package::getPath("atlas_controllers") + std::string("/cmu_config/filter_param/DSc_atlasQ");
-#else
-  nameQ = ros::package::getPath("atlas_controllers") + std::string("/cmu_config/filter_param/DSc_Q3");
-#endif
+  nameQ = ros::package::getPath(pkg_name) + std::string("/config/filter_param/DSc_Q3");
   
   // R
-  nameR = ros::package::getPath("atlas_controllers") + std::string("/cmu_config/filter_param/DSc_R3");
+  nameR = ros::package::getPath(pkg_name) + std::string("/config/filter_param/DSc_R3");
 
   kcekf.readParams(nameQ, nameR); 
   printf("Kinematic KF3 Parameters read\n");
 }
 
-void load_KFEricParams(KinematicFilterEric &kcekf)
+void load_KFEricParams(const std::string &pkg_name, KinematicFilterEric &kcekf)
 {
   std::string nameQ;
   std::string nameR;
   // Q
-#ifdef ATLAS_ONLINE
-  nameQ = ros::package::getPath("atlas_controllers") + std::string("/cmu_config/filter_param/DSc_atlasQ");
-#else
-  nameQ = ros::package::getPath("atlas_controllers") + std::string("/cmu_config/filter_param/DSc_Q3");
-#endif
+  nameQ = ros::package::getPath(pkg_name) + std::string("/config/filter_param/DSc_Q3");
   
   // R
-  nameR = ros::package::getPath("atlas_controllers") + std::string("/cmu_config/filter_param/DSc_R3");
+  nameR = ros::package::getPath(pkg_name) + std::string("/config/filter_param/DSc_R3"); 
 
   kcekf.readParams(nameQ, nameR); 
   printf("KF eric Parameters read\n");
@@ -690,58 +682,23 @@ void CMUCtrlUtils::integrate_ff_const_trq_lpf(const double trq_d[N_JOINTS], cons
   }
 }
 
-/*
-static void pose2Pose(const double pos[3], const Eigen::Quaterniond &quat, geometry_msgs::Pose &pose)
-{
-  pose.position.x = pos[XX];
-  pose.position.y = pos[YY];
-  pose.position.z = pos[ZZ];
-  pose.orientation.w = quat.w();
-  pose.orientation.x = quat.x();
-  pose.orientation.y = quat.y();
-  pose.orientation.z = quat.z();   
-}
- 
-void packPoseOut(const RobotState &rs, atlas_ros_msgs::sf_state_est &pose_out)
-{
-  pose_out.header.stamp = ros::Time(rs.time);
-  pose_out.header.seq++;
-  
-  pose2Pose(rs.tfRoot, rs.rootq, pose_out.root_est);
-  pose2Pose(rs.feet[LEFT].w_sensor_pos, rs.feet[LEFT].w_q, pose_out.foot_est[LEFT]);
-  pose2Pose(rs.feet[RIGHT].w_sensor_pos, rs.feet[RIGHT].w_q, pose_out.foot_est[RIGHT]);
-  
-  switch (rs.contactState) {
-    case DSc:
-      pose_out.contact_state = atlas_ros_msgs::sf_state_est::DSc;
-      break;
-    case SSL:
-      pose_out.contact_state = atlas_ros_msgs::sf_state_est::SSL;
-      break;
-    case SSR:
-      pose_out.contact_state = atlas_ros_msgs::sf_state_est::SSR;
-      break;
-  }
-}
-*/
-
-void load_sf_gains(const std::string &idName, const std::string &ikName, const std::string &wcName, WalkingCon &wc)
+void load_sf_params(const std::string &pkg_name, const std::string &idName, const std::string &ikName, const std::string &wcName, WalkingCon &wc)
 {
   std::string name;
   bool ret;
   std::ifstream in; 
   
-  name = ros::package::getPath("atlas_controllers") + idName;
+  name = ros::package::getPath(pkg_name) + idName;
   in.open(name.c_str());
   ret = wc.idCon->readParams(in);
   in.close();
  
-  name = ros::package::getPath("atlas_controllers") + ikName;
+  name = ros::package::getPath(pkg_name) + ikName;
   in.open(name.c_str());
   ret = wc.ikCon->readParams(in);
   in.close();
 
-  name = ros::package::getPath("atlas_controllers") + wcName;
+  name = ros::package::getPath(pkg_name) + wcName;
   in.open(name.c_str());
   ret &= wc.readParams(in);
   in.close();

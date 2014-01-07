@@ -163,10 +163,8 @@ double *getPrevCommand();
 
 int getCMUcu_f_mask(int i);
 
-void load_KFParams(KinematicFilter3 &kcekf);
-void load_KFEricParams(KinematicFilterEric &kcekf);
-//void Command2sf_out(const RobotState &rs, const IKcmd &ikcmd, const Command &cmd, atlas_ros_msgs::sf_controller_out &msg);
-//void packPoseOut(const RobotState &rs, atlas_ros_msgs::sf_state_est &pose_out);
-void load_sf_gains(const std::string &idName, const std::string &ikName, const std::string &wcName, WalkingCon &wc);
+void load_KFParams(const std::string &pkg_name, KinematicFilter3 &kcekf);
+void load_KFEricParams(const std::string &pkg_name, KinematicFilterEric &kcekf);
+void load_sf_params(const std::string &pkg_name, const std::string &idName, const std::string &ikName, const std::string &wcName, WalkingCon &wc);
 
 #endif

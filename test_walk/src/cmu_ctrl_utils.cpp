@@ -5,8 +5,6 @@
 #include <cmu_walk/Utils.hpp>
 #include <cmu_walk/Transmission.h>
 
-#define TIME_STEP     0.001
-
 #define ACUATOR_SIDE_GAINS
 
 //for transitioning between EW and SF
@@ -563,7 +561,7 @@ const double CMUCtrlUtils::default_q[N_JOINTS] = {
 };
 
 /*
-void Command2sf_out(const RobotState &rs, const IKcmd &ikcmd, const Command &cmd, atlas_ros_msgs::sf_controller_out &msg)
+void Command2sf_out(const RobotState &rs, const IKcmd &ikcmd, const Command &cmd, test_walk::sf_controller_out &msg)
 {
   for (int i = 0; i < N_JOINTS; i++)
     msg.ik_joints[i] = cmd.joints_d[i];
@@ -682,6 +680,38 @@ void CMUCtrlUtils::integrate_ff_const_trq_lpf(const double trq_d[N_JOINTS], cons
   }
 }
 
+static void pose2Pose(const double pos[3], const Eigen::Quaterniond &quat, geometry_msgs::Pose &pose)
+{
+  pose.position.x = pos[XX];
+  pose.position.y = pos[YY];
+  pose.position.z = pos[ZZ];
+  pose.orientation.w = quat.w();
+  pose.orientation.x = quat.x();
+  pose.orientation.y = quat.y();
+  pose.orientation.z = quat.z();   
+}
+ 
+void packPoseOut(const RobotState &rs, atlas_ros_msgs::sf_state_est &pose_out)
+{
+  pose_out.header.stamp = ros::Time(rs.time);
+  pose_out.header.seq++;
+  
+  pose2Pose(rs.tfRoot, rs.rootq, pose_out.root_est);
+  pose2Pose(rs.feet[LEFT].w_sensor_pos, rs.feet[LEFT].w_q, pose_out.foot_est[LEFT]);
+  pose2Pose(rs.feet[RIGHT].w_sensor_pos, rs.feet[RIGHT].w_q, pose_out.foot_est[RIGHT]);
+  
+  switch (rs.contactState) {
+    case DSc:
+      pose_out.contact_state = atlas_ros_msgs::sf_state_est::DSc;
+      break;
+    case SSL:
+      pose_out.contact_state = atlas_ros_msgs::sf_state_est::SSL;
+      break;
+    case SSR:
+      pose_out.contact_state = atlas_ros_msgs::sf_state_est::SSR;
+      break;
+  }
+}
 void load_sf_params(const std::string &pkg_name, const std::string &idName, const std::string &ikName, const std::string &wcName, WalkingCon &wc)
 {
   std::string name;

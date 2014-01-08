@@ -80,7 +80,7 @@ void Logger::init_(double timestep)
   data = new float[LOGGER_MAX_N_POINTS*LOGGER_MAX_CHANNELS];
 
 
-  frequency = 333;
+  frequency = 1. / timestep;
 }
 
 void Logger::add_quat(const char *names, Eigen::Quaterniond *q) {

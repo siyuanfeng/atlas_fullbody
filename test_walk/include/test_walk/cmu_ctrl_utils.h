@@ -13,9 +13,10 @@
 #include <cmu_walk/Command.h>
 #include <cmu_walk/KFdata.h>
 #include <cmu_walk/WalkingCon.h>
-//#include <atlas_ros_msgs/sf_controller_out.h>
-//#include <atlas_ros_msgs/sf_state_est.h>
 #include <cmu_walk/Butter1.h>
+#include <atlas_ros_msgs/sf_state_est.h>
+
+#define TIME_STEP     0.001
 
 class CMUCtrlUtils 
 { 
@@ -161,7 +162,7 @@ class CMUCtrlUtils
 bool isPrevCommandSet(double currentTime);
 double *getPrevCommand();
 
-int getCMUcu_f_mask(int i);
+void packPoseOut(const RobotState &rs, atlas_ros_msgs::sf_state_est &pose_out);
 
 void load_KFParams(const std::string &pkg_name, KinematicFilter3 &kcekf);
 void load_KFEricParams(const std::string &pkg_name, KinematicFilterEric &kcekf);

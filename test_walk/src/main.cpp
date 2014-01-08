@@ -5,22 +5,17 @@
 #include <boost/thread.hpp>
 #include <atlas_msgs/AtlasSimInterfaceCommand.h>
 #include <test_walk/cmu_ctrl_utils.h>
-#include <test_walk/simple_text.h>
+
 #include <test_walk/control_loop_sf_walk.h>
 #include <test_walk/control_loop_ew_manip.h>
 
 #define WALKING_CONTROLLER      0
 #define MANIP_CONTROLLER        1
-static ros::Publisher pub_atlas_cmd;
-static ros::Subscriber sub_atlas_state;
 
 static boost::mutex state_lock;
 static atlas_msgs::AtlasState data_from_robot;
-static atlas_msgs::AtlasCommand data_to_robot;
-
-static test_walk::field_param user_input;
-static test_walk::AtlasWalkParams step_input;
-static test_walk::simple_text text_to_user;
+static atlas_ros_msgs::field_param user_input;
+static atlas_ros_msgs::AtlasWalkParams step_input;
 
 static void quit(int sig);
 
@@ -31,7 +26,17 @@ static void AtlasStateCallback(const atlas_msgs::AtlasState::ConstPtr &msg)
   boost::mutex::scoped_lock lock(state_lock);
   data_from_robot = *msg;
 }  
- 
+
+static void FieldParamCallback(const atlas_ros_msgs::field_param &msg)
+{
+  user_input = msg;  
+}
+
+static void StepQueueCallback(const atlas_ros_msgs::AtlasWalkParams &msg)
+{
+  step_input = msg;  
+}
+
 int main(int argc, char **argv)
 {
   signal( SIGINT, quit );
@@ -49,10 +54,15 @@ int main(int argc, char **argv)
   
   //////////////////////////////////////////////////////////////
   // ros pub / sub
-  pub_atlas_cmd = nh.advertise<atlas_msgs::AtlasCommand>("/atlas/atlas_command", 10); 
+  ros::Publisher pub_atlas_cmd = nh.advertise<atlas_msgs::AtlasCommand>("/atlas/atlas_command", 1); 
+  ros::Publisher pub_walking_pose = nh.advertise<atlas_ros_msgs::sf_state_est>( "/controller/robot_pose", 1);
+  ros::Publisher pub_ew_text = nh.advertise<atlas_ros_msgs::simple_text>( "/controller/text", 1);
+  
+  ros::Subscriber sub_step_queue = nh.subscribe("/atlas/step_queue", 1, StepQueueCallback);
+  ros::Subscriber sub_field_param = nh.subscribe("/atlas/field_param", 1, FieldParamCallback);
   ros::SubscribeOptions jointStatesSo = ros::SubscribeOptions::create<atlas_msgs::AtlasState>("/atlas/atlas_state", 10, &AtlasStateCallback, ros::VoidPtr(), nh.getCallbackQueue());
   jointStatesSo.transport_hints = ros::TransportHints().reliable().tcpNoDelay(true);
-  sub_atlas_state = nh.subscribe(jointStatesSo); 
+  ros::Subscriber sub_atlas_state = nh.subscribe(jointStatesSo); 
   //////////////////////////////////////////////////////////////
   // tell the simulator that I have control now
   ros::Publisher pub_bdi_asi_cmd = nh.advertise<atlas_msgs::AtlasSimInterfaceCommand> 
@@ -72,6 +82,10 @@ int main(int argc, char **argv)
   bool first_time = false;
   
   double last_rec_time = 0;
+
+  atlas_msgs::AtlasCommand data_to_robot;
+  atlas_ros_msgs::simple_text text_to_user;
+  atlas_ros_msgs::sf_state_est est_pose;
 
   // main loop
   while (1) 
@@ -102,10 +116,12 @@ int main(int argc, char **argv)
 
     // run control loop
     if (which_controller == WALKING_CONTROLLER) {
-      control_loop_sf_walk(data_from_robot, state_lock, data_to_robot, user_input, step_input, first_time);
+      control_loop_sf_walk(data_from_robot, state_lock, data_to_robot, user_input, step_input, est_pose, first_time);
+      pub_walking_pose.publish(est_pose);
     }
     else if (which_controller == MANIP_CONTROLLER) {
       control_loop_ew_manip(data_from_robot, state_lock, data_to_robot, user_input, &text_to_user, first_time);
+      pub_ew_text.publish(text_to_user);
     }
 
     // send commands to simulator

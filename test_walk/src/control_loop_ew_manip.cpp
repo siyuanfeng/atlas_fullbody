@@ -5,10 +5,8 @@
 #include <boost/algorithm/string.hpp>
 #include <stdio.h>
 
-#include <test_walk/field_param.h>
 #include <test_walk/control_loop_ew_manip.h>
 #include <test_walk/cmu_ctrl_utils.h>
-#include <test_walk/simple_text.h>
 
 #include <cmu_walk/TrajEW.h>
 #include <cmu_walk/RobotState.h>
@@ -22,7 +20,7 @@ static void pre_enable_ew_manip(const atlas_msgs::AtlasState &data_from_robot,
 static std::map <const std::string, double *> drillBalanceLookup;
 
 //cache for text messages
-static test_walk::simple_text *txt;
+static atlas_ros_msgs::simple_text *txt;
 
 static char realMessageBuf[2000];
 
@@ -674,7 +672,7 @@ void sendHandMessage(int side) {
 
 void lockArms() {
 	switch(keyboardCommand) {
-	case test_walk::field_param::KEYBOARD_I:
+	case atlas_ros_msgs::field_param::KEYBOARD_I:
 		std::cerr << "in\n";
 		for(int s = 0; s < 2; s++) {
 			if(keyboardActive[s]) {
@@ -683,7 +681,7 @@ void lockArms() {
 			}
 		}
 		break;
-	case test_walk::field_param::KEYBOARD_O:
+	case atlas_ros_msgs::field_param::KEYBOARD_O:
 		std::cerr << "out\n";
 		for(int s = 0; s < 2; s++) {
 			if(keyboardActive[s]) {
@@ -692,7 +690,7 @@ void lockArms() {
 			}
 		}
 		break;
-	case test_walk::field_param::KEYBOARD_UP_ARROW:
+	case atlas_ros_msgs::field_param::KEYBOARD_UP_ARROW:
 		std::cerr << "up\n";
 		for(int s = 0; s < 2; s++) {
 			if(keyboardActive[s]) {
@@ -701,7 +699,7 @@ void lockArms() {
 			}
 		}
 		break;
-	case test_walk::field_param::KEYBOARD_DOWN_ARROW:
+	case atlas_ros_msgs::field_param::KEYBOARD_DOWN_ARROW:
 		std::cerr << "down\n";
 		for(int s = 0; s < 2; s++) {
 			if(keyboardActive[s]) {
@@ -710,7 +708,7 @@ void lockArms() {
 			}
 		}
 		break;
-	case test_walk::field_param::KEYBOARD_LEFT_ARROW:
+	case atlas_ros_msgs::field_param::KEYBOARD_LEFT_ARROW:
 		std::cerr << "left\n";
 		for(int s = 0; s < 2; s++) {
 			if(keyboardActive[s]) {
@@ -719,7 +717,7 @@ void lockArms() {
 			}
 		}
 		break;
-	case test_walk::field_param::KEYBOARD_RIGHT_ARROW:
+	case atlas_ros_msgs::field_param::KEYBOARD_RIGHT_ARROW:
 		std::cerr << "right\n";
 		for(int s = 0; s < 2; s++) {
 			if(keyboardActive[s]) {
@@ -728,7 +726,7 @@ void lockArms() {
 			}
 		}
 		break;
-	case test_walk::field_param::KEYBOARD_S:
+	case atlas_ros_msgs::field_param::KEYBOARD_S:
 		std::cerr << "yaw left\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -739,7 +737,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	modifyQ(IK_d.handQ[s], -nrInc,0,0);
 		break;
-	case test_walk::field_param::KEYBOARD_F:
+	case atlas_ros_msgs::field_param::KEYBOARD_F:
 		std::cerr << "yaw right\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -750,7 +748,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	modifyQ(IK_d.handQ[s], nrInc,0,0);
 		break;
-	case test_walk::field_param::KEYBOARD_E:
+	case atlas_ros_msgs::field_param::KEYBOARD_E:
 		std::cerr << "pitch up\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -761,7 +759,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	modifyQ(IK_d.handQ[s], 0,0,-nrInc);
 		break;
-	case test_walk::field_param::KEYBOARD_D:
+	case atlas_ros_msgs::field_param::KEYBOARD_D:
 		std::cerr << "pitch down\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -772,7 +770,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	modifyQ(IK_d.handQ[s], 0,0,nrInc);
 		break;
-	case test_walk::field_param::KEYBOARD_W:
+	case atlas_ros_msgs::field_param::KEYBOARD_W:
 		std::cerr << "roll left\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -783,7 +781,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	modifyQ(IK_d.handQ[s], 0,nrInc,0);
 		break;
-	case test_walk::field_param::KEYBOARD_R:
+	case atlas_ros_msgs::field_param::KEYBOARD_R:
 		std::cerr << "roll right\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -794,7 +792,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	modifyQ(IK_d.handQ[s], 0,-nrInc,0);
 		break;
-	case test_walk::field_param::KEYBOARD_CS:
+	case atlas_ros_msgs::field_param::KEYBOARD_CS:
 		std::cerr << "yaw left\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -805,7 +803,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	preModifyQ(IK_d.handQ[s], -nrInc,0,0);
 		break;
-	case test_walk::field_param::KEYBOARD_CF:
+	case atlas_ros_msgs::field_param::KEYBOARD_CF:
 		std::cerr << "yaw right\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -816,7 +814,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	preModifyQ(IK_d.handQ[s], nrInc,0,0);
 		break;
-	case test_walk::field_param::KEYBOARD_CE:
+	case atlas_ros_msgs::field_param::KEYBOARD_CE:
 		std::cerr << "pitch up\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -827,7 +825,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	preModifyQ(IK_d.handQ[s], 0,0,-nrInc);
 		break;
-	case test_walk::field_param::KEYBOARD_CD:
+	case atlas_ros_msgs::field_param::KEYBOARD_CD:
 		std::cerr << "pitch down\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -838,7 +836,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	preModifyQ(IK_d.handQ[s], 0,0,nrInc);
 		break;
-	case test_walk::field_param::KEYBOARD_CW:
+	case atlas_ros_msgs::field_param::KEYBOARD_CW:
 		std::cerr << "roll left\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -849,7 +847,7 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	preModifyQ(IK_d.handQ[s], 0,nrInc,0);
 		break;
-	case test_walk::field_param::KEYBOARD_CR:
+	case atlas_ros_msgs::field_param::KEYBOARD_CR:
 		std::cerr << "roll right\n";
 		if(IK_d.relHands) {
 			Eigen::Vector3d rel(IK_d.hand[LEFT][XX]-IK_d.hand[RIGHT][XX], IK_d.hand[LEFT][YY]-IK_d.hand[RIGHT][YY], IK_d.hand[LEFT][ZZ]-IK_d.hand[RIGHT][ZZ]);
@@ -860,11 +858,11 @@ void lockArms() {
 		}
 		else	for(int s = 0; s < 2; s++)	if(keyboardActive[s])	preModifyQ(IK_d.handQ[s], 0,-nrInc,0);
 		break;
-	case test_walk::field_param::KEYBOARD_Q:
+	case atlas_ros_msgs::field_param::KEYBOARD_Q:
 		std::cerr << "Neck Up\n";
 		desNeck -= nrInc;
 		break;
-	case test_walk::field_param::KEYBOARD_A:
+	case atlas_ros_msgs::field_param::KEYBOARD_A:
 		std::cerr << "Neck Down\n";
 		desNeck += nrInc;
 		break;
@@ -1284,8 +1282,8 @@ void doProcessing() {
 void control_loop_ew_manip(const atlas_msgs::AtlasState &data_from_robot,
     boost::mutex &data_from_robot_lock,
     atlas_msgs::AtlasCommand &data_to_robot,
-    test_walk::field_param &param,
-    test_walk::simple_text *to_ocu,
+    atlas_ros_msgs::field_param &param,
+    atlas_ros_msgs::simple_text *to_ocu,
     bool firstTime) 
 {
   txt = to_ocu;
@@ -1494,6 +1492,26 @@ void initialize_loop_ew_manip()
 
 	//load_KFParams(kcekf);
 	load_KFEricParams(std::string("test_walk"), kcekf);
+
+  logger.init(TIME_STEP);
+	logger.addEWstatic();
+	logger.add_datapoint("time","s",&tc);
+	logger.add_datapoint("ts","s",&ts);
+	logger.add_datapoint("conType","-",&conType);
+	logger.add_datapoint("step","-",&step);
+	logger.add_datapoint("duration","s",&duration);
+
+	logger.add_datapoint("home[X]","m",&(home[XX]));
+	logger.add_datapoint("home[Y]","m",&(home[YY]));
+	logger.add_datapoint("home[Z]","m",&(home[ZZ]));
+	logger.add_datapoint("CoMint[X]","m",&comIntX);
+
+	RS.addToLog(logger);
+	IK_d.addToLog(logger);
+	IK.addToLog(logger);
+	ID_d.addToLog(logger);
+	ID.addToLog(logger);
+	cmu_utils.addToLog(logger);
 }
 
 // This function is called when the pump stops
@@ -1518,26 +1536,7 @@ static void pre_enable_ew_manip(const atlas_msgs::AtlasState &data_from_robot,
 
 	RS.time = cmu_utils.time;
 	tc0 = RS.time;
-	logger.init(RS.timeStep);
-	logger.addEWstatic();
-	logger.add_datapoint("time","s",&tc);
-	logger.add_datapoint("ts","s",&ts);
-	logger.add_datapoint("conType","-",&conType);
-	logger.add_datapoint("step","-",&step);
-	logger.add_datapoint("duration","s",&duration);
-
-	logger.add_datapoint("home[X]","m",&(home[XX]));
-	logger.add_datapoint("home[Y]","m",&(home[YY]));
-	logger.add_datapoint("home[Z]","m",&(home[ZZ]));
-	logger.add_datapoint("CoMint[X]","m",&comIntX);
-
-	RS.addToLog(logger);
-	IK_d.addToLog(logger);
-	IK.addToLog(logger);
-	ID_d.addToLog(logger);
-	ID.addToLog(logger);
-	cmu_utils.addToLog(logger);
-
+	
 	// init filter stuff
 	//cmu_utils.init_KF(kcekf, RS.getType(), 0);
 	cmu_utils.init_KFEric(kcekf, RS.getType(), 0);

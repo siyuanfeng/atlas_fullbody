@@ -18,12 +18,14 @@ extern std::string pkg_name;
 void control_loop_sf_walk(const atlas_msgs::AtlasState &data_from_robot,
     boost::mutex &data_from_robot_lock,
     atlas_msgs::AtlasCommand &data_to_robot,
-    test_walk::field_param &params,
-    test_walk::AtlasWalkParams &input_steps,
+    atlas_ros_msgs::field_param &params,
+    atlas_ros_msgs::AtlasWalkParams &input_steps,
+    atlas_ros_msgs::sf_state_est &pose_out,
     bool firstTime)
 {
   static int state = 0;
 
+  // unpack data, and run state estimator
   {
     boost::mutex::scoped_lock lock(data_from_robot_lock);
     utils.UnpackDataFromRobot(data_from_robot);
@@ -43,6 +45,8 @@ void control_loop_sf_walk(const atlas_msgs::AtlasState &data_from_robot,
     utils.estimateState(cState, kcekf, utils.foot_forces[LEFT][ZZ], utils.foot_forces[RIGHT][ZZ]);
     utils.updateRobotState(cState, rs);  
   }
+  // publish estimator root state
+  packPoseOut(rs, pose_out);
   
   if (rs.time - init_time > 5 && state == 0) {
     state++;
@@ -59,6 +63,7 @@ void control_loop_sf_walk(const atlas_msgs::AtlasState &data_from_robot,
   // run walking controller
   lwc.control(rs, cmd);
 
+  // pack data to robot
   utils.PackDataToRobot(cmd, rs.time, data_to_robot);
   logger.saveData();
 }
@@ -77,7 +82,7 @@ void initialize_loop_sf_walk()
       lwc); 
    
   // init logger
-  logger.init(0.001);
+  logger.init(TIME_STEP);
   rs.addToLog(logger);
   cmd.addToLog(logger);
   lwc.idcmd.addToLog(logger);

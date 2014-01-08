@@ -17,7 +17,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #uncomment if you have defined messages
-#rosbuild_genmsg()
+rosbuild_genmsg()
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
@@ -28,12 +28,3 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
-
-rosbuild_add_executable(test_main src/main.cpp src/cmu_ctrl_utils.cpp src/control_loop_sf_walk.cpp src/control_loop_ew_manip.cpp)
-  set_target_properties(test_main PROPERTIES COMPILE_FLAGS "-O4")
-  target_link_libraries(test_main CMUWalkSim)
-
-#rosbuild_add_executable(test_walk src/test_walk.cpp src/cmu_ctrl_utils.cpp)
-#  set_target_properties(test_walk PROPERTIES COMPILE_FLAGS "-O4")
-#  target_link_libraries(test_walk CMUWalkSim)
-

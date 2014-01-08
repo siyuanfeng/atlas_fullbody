@@ -77,8 +77,14 @@ int main(int argc, char **argv)
   initialize_loop_sf_walk();
   initialize_loop_ew_manip();
   
+  /////////////////////////////////////////////////////////////
+  // manuallly switch controller, should be based on user input
+  // through ros
   int which_controller = WALKING_CONTROLLER;
   int last_controller = MANIP_CONTROLLER;
+  //int which_controller = MANIP_CONTROLLER;
+  //int last_controller = WALKING_CONTROLLER;
+  
   bool first_time = false;
   
   double last_rec_time = 0;

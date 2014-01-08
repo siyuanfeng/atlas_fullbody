@@ -229,9 +229,9 @@ void CMUCtrlUtils::PackDataToRobot(const double torque_d[N_JOINTS], const double
     dtr.k_effort[i] = 255;      // user mode
   }
   
-  // sync timeout length, gazebo will wait for 15 ms before doing
+  // sync timeout length, gazebo will wait for 5 ms before doing
   // the next simulation step
-  dtr.desired_controller_period_ms = 15;
+  dtr.desired_controller_period_ms = 5;
 }
 
 void CMUCtrlUtils::UnpackDataFromRobot(const atlas_msgs::AtlasState &dfr, double yaw)

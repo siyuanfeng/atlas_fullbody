@@ -11,9 +11,6 @@
 #include <cmu_walk/DummyFSPlanner.h>
 
 static void quit(int sig);
-static boost::shared_ptr <boost::thread> thread_ptr;
-static bool thread_stop = false;
-static ros::AsyncSpinner *spinner;
 
 static ros::Publisher pub_atlas_cmd;
 static ros::Subscriber sub_atlas_state;
@@ -26,6 +23,47 @@ static BatchLogger logger;           // logging
 
 static void control_thread()
 {
+
+}
+
+
+static void AtlasStateCallback(const atlas_msgs::AtlasState::ConstPtr &msg)
+{
+  boost::mutex::scoped_lock lock(state_lock);
+  data_from_robot = *msg;
+}  
+
+int main(int argc, char **argv)
+{
+  signal( SIGINT, quit );
+  ros::init(argc, argv, "test_walk", ros::init_options::NoSigintHandler);
+  
+  ros::NodeHandle nh;  
+  ros::Time last_ros_time_;
+  bool wait = true;
+  while (wait) {
+    last_ros_time_ = ros::Time::now();
+    if (last_ros_time_.toSec() > 0) {
+      wait = false;
+    }
+  }
+  
+  //////////////////////////////////////////////////////////////
+  // ros pub / sub
+  pub_atlas_cmd = nh.advertise<atlas_msgs::AtlasCommand>("/atlas/atlas_command", 10); 
+  ros::SubscribeOptions jointStatesSo = ros::SubscribeOptions::create<atlas_msgs::AtlasState>("/atlas/atlas_state", 10, &AtlasStateCallback, ros::VoidPtr(), nh.getCallbackQueue());
+  jointStatesSo.transport_hints = ros::TransportHints().reliable().tcpNoDelay(true);
+  sub_atlas_state = nh.subscribe(jointStatesSo); 
+  //////////////////////////////////////////////////////////////
+  // tell the simulator that I have control now
+  ros::Publisher pub_bdi_asi_cmd = nh.advertise<atlas_msgs::AtlasSimInterfaceCommand> 
+    ( "/atlas/atlas_sim_interface_command", 1);
+  atlas_msgs::AtlasSimInterfaceCommand bdi_cmd;
+  bdi_cmd.header.stamp = ros::Time::now();
+  bdi_cmd.behavior = atlas_msgs::AtlasSimInterfaceCommand::USER;
+  pub_bdi_asi_cmd.publish(bdi_cmd);
+  ////////////////////////////////////////////////////////////// 
+
   int cState;
   CMUCtrlUtils utils;           // handles talking to the simulator
   PelvRobotState rs;            // contains all info about robot
@@ -48,7 +86,10 @@ static void control_thread()
       std::string("/config/con_param/atlas_static_ikCon.conf"),
       std::string("/config/con_param/atlas_wc.conf"),
       lwc); 
-  
+
+  double t0, t1;
+  double dt[3];
+
   logger.init(0.001);
   rs.addToLog(logger);
   cmd.addToLog(logger);
@@ -58,15 +99,18 @@ static void control_thread()
   lwc.ikCon->addToLog(logger);
   utils.addToLog(logger);
   lwc.addToLog(logger); 
+  logger.add_datapoint("dt_est", "-", dt);
+  logger.add_datapoint("dt_qp", "-", dt+1);
+  logger.add_datapoint("dt_send", "-", dt+2);
 
-  
   int state = 0;
 
+
   // main loop
-  while (!thread_stop) 
+  while (1) 
   {
     // tell ros to process all listening / publishing callbacks
-    //ros::spinOnce();
+    ros::spinOnce();
 
     // process data from simulator
     {
@@ -82,6 +126,8 @@ static void control_thread()
       utils.UnpackDataFromRobot(data_from_robot);
       last_rec_time = data_from_robot.header.stamp.toSec();
     }
+
+    t0 = get_time();    
 
     // initialize state estimator to the first real robot state
     if (!inited) {
@@ -113,68 +159,27 @@ static void control_thread()
       lwc.updateFootSteps(rs, fsplan);
     }
 
+    t1 = get_time();
+    dt[0] = t1 - t0;
+    t0 = t1;
+
     // run walking controller
     lwc.control(rs, cmd);
+    
+    t1 = get_time();
+    dt[1] = t1 - t0;
+    t0 = t1;
+
     utils.PackDataToRobot(cmd, rs.time, data_to_robot);
     logger.saveData();
 
     // send commands to simulator
     pub_atlas_cmd.publish(data_to_robot);
-  }  
-}
 
-
-static void AtlasStateCallback(const atlas_msgs::AtlasState::ConstPtr &msg)
-{
-  boost::mutex::scoped_lock lock(state_lock);
-  data_from_robot = *msg;
-}  
-
-int main(int argc, char **argv)
-{
-  signal( SIGINT, quit );
-  ros::init(argc, argv, "test_walk", ros::init_options::NoSigintHandler);
-  
-  ros::NodeHandle nh;  
-  ros::Time last_ros_time_;
-  bool wait = true;
-  while (wait) {
-    last_ros_time_ = ros::Time::now();
-    if (last_ros_time_.toSec() > 0) {
-      wait = false;
-    }
-  }
-  
-  //////////////////////////////////////////////////////////////
-  // ros pub / sub
-  pub_atlas_cmd = nh.advertise<atlas_msgs::AtlasCommand>("/atlas/atlas_command", 1); 
-  
-  // ros topic subscriptions
-  ros::SubscribeOptions jointStatesSo = ros::SubscribeOptions::create<atlas_msgs::AtlasState>("/atlas/atlas_state", 1, &AtlasStateCallback, ros::VoidPtr(), nh.getCallbackQueue());
-  // Because TCP causes bursty communication with high jitter,
-  // declare a preference on UDP connections for receiving
-  // joint states, which we want to get at a high rate.
-  // Note that we'll still accept TCP connections for this topic
-  // (e.g., from rospy nodes, which don't support UDP);
-  // we just prefer UDP.
-  jointStatesSo.transport_hints = ros::TransportHints().unreliable();
-  sub_atlas_state = nh.subscribe( jointStatesSo ); 
-  //////////////////////////////////////////////////////////////
-  // tell the simulator that I have control now
-  ros::Publisher pub_bdi_asi_cmd = nh.advertise<atlas_msgs::AtlasSimInterfaceCommand> 
-    ( "/atlas/atlas_sim_interface_command", 1);
-  atlas_msgs::AtlasSimInterfaceCommand bdi_cmd;
-  bdi_cmd.header.stamp = ros::Time::now();
-  bdi_cmd.behavior = atlas_msgs::AtlasSimInterfaceCommand::USER;
-  pub_bdi_asi_cmd.publish(bdi_cmd);
-  ////////////////////////////////////////////////////////////// 
-   
-  thread_ptr = boost::shared_ptr<boost::thread>(new boost::thread(control_thread));
-
-  spinner = new ros::AsyncSpinner(3); // 0: Use all cores
-  spinner->start();
-  while(true)
-    ;
+    t1 = get_time();
+    dt[2] = t1 - t0;
+    t0 = t1;
+  }    
 
   quit(SIGINT);
 }
@@ -184,12 +189,6 @@ int main(int argc, char **argv)
 
 static void quit(int sig)
 {
-  thread_stop = true;
-  thread_ptr->join();
-  
-  spinner->stop();
-  delete spinner;
-
   ros::shutdown();
   ros::waitForShutdown(); 
 
